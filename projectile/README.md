@@ -31,3 +31,6 @@ download ```libraries.zip``` and unzip the contents into the Arduino libraries f
 | test battery                                                   | high   | high   | :rotating_light: | listed |
 | test fire                                                      | high   | high   |  :fire:          | listed |
 | characterize power draw                                        | ???    | high   |  :fire:          | listed |
+
+# broken parts
+1. bme280, cause of death: extended usage??
