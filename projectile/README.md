@@ -33,4 +33,4 @@ download ```libraries.zip``` and unzip the contents into the Arduino libraries f
 | characterize power draw                                        | ???    | high   |  :fire:          | listed |
 
 # broken parts
-1. bme280, cause of death: extended usage??
+1. ~~bme280, cause of death: extended usage??~~ faulty wiring/breadboard
