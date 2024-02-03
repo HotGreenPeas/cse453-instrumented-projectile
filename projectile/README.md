@@ -30,3 +30,4 @@ download ```libraries.zip``` and unzip the contents into the Arduino libraries f
 | test max distance                                              | med    | high   | :fire:           | listed |
 | test battery                                                   | high   | high   | :rotating_light: | listed |
 | test fire                                                      | high   | high   |  :fire:          | listed |
+| characterize power draw                                        | ???    | high   |  :fire:          | listed |
