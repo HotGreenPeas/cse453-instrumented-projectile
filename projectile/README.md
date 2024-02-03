@@ -13,18 +13,20 @@ upload ```hc12_arduino.ino``` to an Arduino
 download ```libraries.zip``` and unzip the contents into the Arduino libraries folder
 
 # future work
-- attempt to reduce loop to ~100 ms, currently ~120 ms
-- test max distance
-- test battery
-- cannon will automatically detect when the projectile is loaded
-- calibrate sensors
-- calculate time of flight
-- find orientation of projectile??
-- make sense of acceleration and display understandable data
-- test fire
-- automatic power shutoff in case of high temps
-- validate sensor reading, reduce noise, reject invalid data
-- communication handshake
-- indicator leds
-- calculate ground distance
-- bearing of projectile??
+| task                                                           | effort | impact | priority | status |
+|----------------------------------------------------------------|--------|--------|----------|--------|
+| attempt to reduce loop to ~100 ms, currently ~120 ms           | high   | low    | zzz      |        |
+| cannon will automatically detect when the projectile is loaded |        |        |          |        |
+| calibrate sensors                                              |        |        |          |        |
+| calculate time of flight                                       |        |        |          |        |
+| find orientation of projectile                                 |        |        |          |        |
+| make sense of acceleration and display understandable data     |        |        |          |        |
+| automatic power shutoff in case of high temps                  |        |        |          |        |
+| validate sensor reading, reduce noise, reject invalid data     |        |        |          |        |
+| communication handshake                                        |        |        |          |        |
+| indicator leds                                                 |        |        |          |        |
+| calculate ground distance                                      |        |        |          |        |
+| bearing of projectile                                          |        |        |          |        |
+| test max distance                                              |        |        |          |        |
+| test battery                                                   |        |        |          |        |
+| test fire                                                      |        |        |          |        |
