@@ -13,20 +13,20 @@ upload ```hc12_arduino.ino``` to an Arduino
 download ```libraries.zip``` and unzip the contents into the Arduino libraries folder
 
 # future work
-| task                                                           | effort | impact | priority | status |
-|----------------------------------------------------------------|--------|--------|----------|--------|
-| attempt to reduce loop to ~100 ms, currently ~120 ms           | high   | low    | zzz      |        |
-| cannon will automatically detect when the projectile is loaded |        |        |          |        |
-| calibrate sensors                                              |        |        |          |        |
-| calculate time of flight                                       |        |        |          |        |
-| find orientation of projectile                                 |        |        |          |        |
-| make sense of acceleration and display understandable data     |        |        |          |        |
-| automatic power shutoff in case of high temps                  |        |        |          |        |
-| validate sensor reading, reduce noise, reject invalid data     |        |        |          |        |
-| communication handshake                                        |        |        |          |        |
-| indicator leds                                                 |        |        |          |        |
-| calculate ground distance                                      |        |        |          |        |
-| bearing of projectile                                          |        |        |          |        |
-| test max distance                                              |        |        |          |        |
-| test battery                                                   |        |        |          |        |
-| test fire                                                      |        |        |          |        |
+| task                                                           | effort | impact |     priority     | status |
+|----------------------------------------------------------------|--------|--------|------------------|--------|
+| attempt to reduce loop to ~100 ms, currently ~120 ms           | high   | low    | :sleeping:       | listed |
+| cannon will automatically detect when the projectile is loaded | med    | med    | :coffee:         | listed |
+| calibrate sensors                                              | med    | med    | :coffee:         | listed |
+| calculate time of flight                                       | high   | high   | :star:           | listed |
+| find orientation of projectile                                 | high   | low    | :coffee:         | listed |
+| make sense of acceleration and display understandable data     | med    | med    |  :star:          | listed |
+| automatic power shutoff in case of high temps                  | med    | low    | :sleeping:       | listed |
+| validate sensor reading, reduce noise, reject invalid data     | med    | high   | :rotating_light: | listed |
+| communication handshake                                        | med    | low    |  :star:          | listed |
+| indicator leds                                                 | med    | low    | :sleeping:       | listed |
+| calculate ground distance                                      | low    | high   | :sleeping:       | listed |
+| bearing of projectile                                          | high   | low    | :coffee:         | listed |
+| test max distance                                              | med    | high   | :fire:           | listed |
+| test battery                                                   | high   | high   | :rotating_light: | listed |
+| test fire                                                      | high   | high   |  :fire:          | listed |
