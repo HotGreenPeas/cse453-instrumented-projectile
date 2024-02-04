@@ -36,6 +36,8 @@ download ```libraries.zip``` and unzip the contents into the Arduino libraries f
 | test sensor and controller reliability                         | low    | med    |  :star:          | done  |
 | reduce esp32 uwb power consumption                             | med    | med    |  :star:          | listed  |
 | find new batteries                                             | med    | high   | :rotating_light: | listed  |
+| sensor config                                                  | med    | med    | :star:           | listed  |
+
 
 # broken parts
 1. ~~bme280, cause of death: extended usage??~~ faulty wiring/breadboard
