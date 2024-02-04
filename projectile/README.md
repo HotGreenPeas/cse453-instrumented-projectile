@@ -33,6 +33,7 @@ download ```libraries.zip``` and unzip the contents into the Arduino libraries f
 | characterize power draw                                        | ???    | high   |  :fire:          | listed |
 | redundant sensors                                              | med    | low    |  :sleeping:      | listed |
 | test wind effect on pressure                                   | med    | low    |  :coffee:        | listed |
+| test sensor and controller reliability                         | low    | med    |  :star:          | done  |
 
 # broken parts
 1. ~~bme280, cause of death: extended usage??~~ faulty wiring/breadboard
