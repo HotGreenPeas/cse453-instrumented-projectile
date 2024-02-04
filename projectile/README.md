@@ -37,6 +37,7 @@ download ```libraries.zip``` and unzip the contents into the Arduino libraries f
 | reduce esp32 uwb power consumption                             | med    | med    |  :star:          | listed  |
 | find new batteries                                             | med    | high   | :rotating_light: | listed  |
 | sensor config                                                  | med    | med    | :star:           | listed  |
+| state diagram                                                  | med    | med    | :star:           | listed  |
 
 
 # broken parts
