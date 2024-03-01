@@ -31,13 +31,13 @@ download ```libraries.zip``` and unzip the contents into the Arduino libraries f
 | test battery                                                   | high   | high   | :rotating_light: | listed |
 | test fire                                                      | high   | high   |  :fire:          | listed |
 | characterize power draw                                        | ???    | high   |  :fire:          | listed |
-| redundant sensors                                              | med    | low    |  :sleeping:      | listed |
+| redundant sensors                                              | med    | low    |  :sleeping:      | DROP |
 | test wind effect on pressure                                   | med    | low    |  :coffee:        | listed |
-| test sensor and controller reliability                         | low    | med    |  :star:          | done  |
+| test sensor and controller reliability                         | low    | med    |  :star:          | DONE  |
 | reduce esp32 uwb power consumption                             | med    | med    |  :star:          | listed  |
 | find new batteries                                             | med    | high   | :rotating_light: | listed  |
 | sensor config                                                  | med    | med    | :star:           | listed  |
-| state diagram                                                  | med    | med    | :star:           | listed  |
+| state diagram                                                  | med    | med    | :star:           | DONE   |
 
 
 # broken parts
