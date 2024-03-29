@@ -10,9 +10,10 @@ https://github.com/Makerfabs/Makerfabs-ESP32-UWB/tree/main/example/tag/uwb_tag
 #include <SPI.h>
 
 #include "DW1000Ranging.h"
+#include "altitude.h"
 
 #include <Adafruit_Sensor.h>
-#include <Adafruit_BME280.h>
+#include "Adafruit_BMP3XX.h"
 #include <Adafruit_MPU6050.h>
 
 #include <SoftwareSerial.h>
@@ -30,9 +31,21 @@ https://github.com/Makerfabs/Makerfabs-ESP32-UWB/tree/main/example/tag/uwb_tag
 
 #define SEALEVELPRESSURE_HPA (1013.25)
 
+#define GYRO_X_OFFSET 0.10
+#define ACCEL_STDDEV 0.0010
+#define GYRO_STDDEV 0.0010
+#define BARO_STDDEV 0.018
+#define CA 0.5
+#define ACCEL_THRESH 1
+
+#define G 9.8
+
+// Altitude estimator
+AltitudeEstimator altitude = AltitudeEstimator(ACCEL_STDDEV, 	GYRO_STDDEV, 	BARO_STDDEV, CA, ACCEL_THRESH);	
+
 Adafruit_MPU6050 mpu;
 
-Adafruit_BME280 bme;  // I2C
+Adafruit_BMP3XX bmp;
 
 EspSoftwareSerial::UART HC12;
 
@@ -44,16 +57,17 @@ const uint8_t PIN_IRQ = 34;  // irq pin
 const uint8_t PIN_SS = 4;    // spi select pin
 
 struct __attribute__((packed)) STRUCT {
-  float tempBME;
   float altitude;
   float distance;
-  float tempMPU;
-  float accel_x;
-  float accel_y;
-  float accel_z;
+  float vel_y;
 } testStruct;
 
 void setup(void) {
+
+  testStruct.altitude = -1;
+  testStruct.vel_y = -1;
+  testStruct.distance = -1;
+
   Serial.begin(115200);
   Wire.begin(I2C_SDA, I2C_SCL);
 
@@ -93,7 +107,7 @@ void setup(void) {
       Serial.println("+-16G");
       break;
   }
-  mpu.setGyroRange(MPU6050_RANGE_500_DEG);
+  mpu.setGyroRange(MPU6050_RANGE_1000_DEG);
   Serial.print("Gyro range set to: ");
   switch (mpu.getGyroRange()) {
     case MPU6050_RANGE_250_DEG:
@@ -140,13 +154,19 @@ void setup(void) {
 
   // default settings
   // (you can also pass in a Wire library object like &Wire2)
-  status = bme.begin(0x76);
+  status = bmp.begin_I2C();
   if (!status) {
-    Serial.println("Could not find a valid BME280 sensor, check wiring!");
+    Serial.println("Could not find a valid BMP390 sensor, check wiring!");
     while (1)
       ;
   }
-  Serial.println("BME280 Found!");
+  Serial.println("BMP390 Found!");
+ // Set up oversampling and filter initialization
+  bmp.setTemperatureOversampling(BMP3_OVERSAMPLING_8X);
+  bmp.setPressureOversampling(BMP3_OVERSAMPLING_4X);
+  bmp.setIIRFilterCoeff(BMP3_IIR_FILTER_COEFF_3);
+  bmp.setOutputDataRate(BMP3_ODR_50_HZ);
+
 
   //init the configuration
   SPI.begin(SPI_SCK, SPI_MISO, SPI_MOSI);
@@ -167,6 +187,8 @@ void loop() {
   if ((millis() - runtime) > 100) {
     sendData();
     runtime = millis();
+    printAcceleration();
+    //printHeight();
   }
   DW1000Ranging.loop();
 }
@@ -174,14 +196,15 @@ void loop() {
 void sendData() {
   sensors_event_t a, g, temp;
   mpu.getEvent(&a, &g, &temp);
-
-  testStruct.tempBME = bme.readTemperature();
-  testStruct.altitude = bme.readAltitude(SEALEVELPRESSURE_HPA);
+  bmp.performReading();
+  float accel[3] = {a.acceleration.x/G, a.acceleration.y/G, a.acceleration.z/G}; 
+  float gyro[3] = {g.gyro.x + GYRO_X_OFFSET, g.gyro.y, g.gyro.z};
+  float baroHeight = bmp.readAltitude(SEALEVELPRESSURE_HPA);
   testStruct.distance = DW1000Ranging.getDistantDevice()->getRange();
-  testStruct.tempMPU = temp.temperature;
-  testStruct.accel_x = a.acceleration.x;
-  testStruct.accel_y = a.acceleration.y;
-  testStruct.accel_z = a.acceleration.z;
+  altitude.estimate(accel, gyro, baroHeight, micros());
+
+  testStruct.vel_y = altitude.getVerticalVelocity();
+  testStruct.altitude = altitude.getAltitude();
   myTransfer.sendDatum(testStruct);
 }
 
@@ -216,7 +239,7 @@ void printAcceleration() {
 
 void printHeight() {
   Serial.print("Temperature = ");
-  Serial.print(bme.readTemperature());
+  Serial.print(bmp.temperature);
   Serial.println(" *C");
 
   // Convert temperature to Fahrenheit
@@ -225,16 +248,12 @@ void printHeight() {
   Serial.println(" *F");*/
 
   Serial.print("Pressure = ");
-  Serial.print(bme.readPressure() / 100.0F);
+  Serial.print(bmp.pressure / 100.0F);
   Serial.println(" hPa");
 
   Serial.print("Approx. Altitude = ");
-  Serial.print(bme.readAltitude(SEALEVELPRESSURE_HPA));
+  Serial.print(bmp.readAltitude(SEALEVELPRESSURE_HPA));
   Serial.println(" m");
-
-  Serial.print("Humidity = ");
-  Serial.print(bme.readHumidity());
-  Serial.println(" %");
 
   Serial.println();
 }
