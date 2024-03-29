@@ -24,6 +24,8 @@ For ESP32 UWB Pro with Display
 #define I2C_SDA 4
 #define I2C_SCL 5
 
+#define ADELAY 16604
+
 Adafruit_SSD1306 display(128, 64, &Wire, -1);
 
 void setup()
@@ -46,6 +48,8 @@ void setup()
     // init the configuration
     SPI.begin(SPI_SCK, SPI_MISO, SPI_MOSI);
     DW1000Ranging.initCommunication(UWB_RST, UWB_SS, UWB_IRQ); // Reset, CS, IRQ pin
+
+    DW1000.setAntennaDelay(ADELAY);
 
     DW1000Ranging.attachNewRange(newRange);
     DW1000Ranging.attachBlinkDevice(newBlink);
