@@ -34,7 +34,7 @@ https://github.com/Makerfabs/Makerfabs-ESP32-UWB/tree/main/example/tag/uwb_tag
 #define GYRO_X_OFFSET 0.10
 #define ACCEL_STDDEV 0.0010
 #define GYRO_STDDEV 0.0010
-#define BARO_STDDEV 0.018
+#define BARO_STDDEV 0.02
 #define CA 0.5
 #define ACCEL_THRESH 1
 
@@ -187,9 +187,14 @@ void loop() {
   if ((millis() - runtime) > 100) {
     sendData();
     runtime = millis();
-    printAcceleration();
+    //printAcceleration();
     //printHeight();
   }
+  // if tag within 0.5 m of the anchor
+  // and is Vy = 0
+  // for 1 second
+  // set relative height to zero
+  
   DW1000Ranging.loop();
 }
 
