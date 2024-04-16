@@ -19,6 +19,8 @@ https://github.com/Makerfabs/Makerfabs-ESP32-UWB/tree/main/example/tag/uwb_tag
 #include <SoftwareSerial.h>
 #include "SerialTransfer.h"
 
+#define TAG_ADDR "7D:00:22:EA:82:60:3B:9B"
+
 #define DW_CS 4
 #define SPI_MOSI 23
 #define SPI_SCK 18
@@ -32,13 +34,19 @@ https://github.com/Makerfabs/Makerfabs-ESP32-UWB/tree/main/example/tag/uwb_tag
 #define SEALEVELPRESSURE_HPA (1013.25)
 
 #define GYRO_X_OFFSET 0.10
-#define ACCEL_STDDEV 0.0010
-#define GYRO_STDDEV 0.0010
+#define ACCEL_STDDEV 0.5505
+#define GYRO_STDDEV 0.0005
 #define BARO_STDDEV 0.02
-#define CA 0.5
-#define ACCEL_THRESH 1
+#define CA 1
+#define ACCEL_THRESH 25
 
 #define G 9.8
+
+// 0.0005, 	// sigma Accel
+//                                                0.0005, 	// sigma Gyro
+//                                                0.018,   // sigma Baro
+//                                                0.5, 	// ca
+//                                                0.1)
 
 // Altitude estimator
 AltitudeEstimator altitude = AltitudeEstimator(ACCEL_STDDEV, 	GYRO_STDDEV, 	BARO_STDDEV, CA, ACCEL_THRESH);	
@@ -60,6 +68,7 @@ struct __attribute__((packed)) STRUCT {
   float altitude;
   float distance;
   float vel_y;
+  float a_y;
 } testStruct;
 
 void setup(void) {
@@ -107,7 +116,7 @@ void setup(void) {
       Serial.println("+-16G");
       break;
   }
-  mpu.setGyroRange(MPU6050_RANGE_1000_DEG);
+  mpu.setGyroRange(MPU6050_RANGE_250_DEG);
   Serial.print("Gyro range set to: ");
   switch (mpu.getGyroRange()) {
     case MPU6050_RANGE_250_DEG:
@@ -115,7 +124,7 @@ void setup(void) {
       break;
     case MPU6050_RANGE_500_DEG:
       Serial.println("+- 500 deg/s");
-      break;
+      break;  
     case MPU6050_RANGE_1000_DEG:
       Serial.println("+- 1000 deg/s");
       break;
@@ -176,15 +185,15 @@ void setup(void) {
   DW1000Ranging.attachNewDevice(newDevice);
   DW1000Ranging.attachInactiveDevice(inactiveDevice);
   //Enable the filter to smooth the distance
-  //DW1000Ranging.useRangeFilter(true);
+  DW1000Ranging.useRangeFilter(true);
 
   //we start the module as a tag
-  DW1000Ranging.startAsTag("7D:00:22:EA:82:60:3B:9C", DW1000.MODE_LONGDATA_RANGE_LOWPOWER);
+  DW1000Ranging.startAsTag(TAG_ADDR, DW1000.MODE_LONGDATA_RANGE_LOWPOWER, DW1000.CHANNEL_2, false);
 }
 
 long int runtime = 0;
 void loop() {
-  if ((millis() - runtime) > 100) {
+  if ((millis() - runtime) > 60) {
     sendData();
     runtime = millis();
     //printAcceleration();
@@ -209,6 +218,7 @@ void sendData() {
   altitude.estimate(accel, gyro, baroHeight, micros());
 
   testStruct.vel_y = altitude.getVerticalVelocity();
+  testStruct.a_y = altitude.getVerticalAcceleration();
   testStruct.altitude = altitude.getAltitude();
   myTransfer.sendDatum(testStruct);
 }
