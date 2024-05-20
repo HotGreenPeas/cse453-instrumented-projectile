@@ -1,6 +1,6 @@
 /*
 
-For ESP32 UWB or ESP32 UWB Pro
+Anchor code for ESP32 UWB or ESP32 UWB Pro
 
 */
 
@@ -14,6 +14,7 @@ For ESP32 UWB or ESP32 UWB Pro
 #define SPI_MOSI 23
 #define DW_CS 4
 
+// set antenna delay to calibrate distance ranging
 #define ADELAY 16604
 
 // connection pins

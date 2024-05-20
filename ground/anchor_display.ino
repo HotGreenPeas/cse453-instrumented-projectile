@@ -1,6 +1,6 @@
 /*
 
-For ESP32 UWB Pro with Display
+Anchor code for ESP32 UWB Pro with Display
 
 */
 
@@ -24,6 +24,7 @@ For ESP32 UWB Pro with Display
 #define I2C_SDA 4
 #define I2C_SCL 5
 
+// set antenna delay to calibrate distance ranging
 #define ADELAY 16604
 
 Adafruit_SSD1306 display(128, 64, &Wire, -1);
@@ -55,7 +56,7 @@ void setup()
     DW1000Ranging.attachBlinkDevice(newBlink);
     DW1000Ranging.attachInactiveDevice(inactiveDevice);
 
-    DW1000Ranging.startAsAnchor(ANCHOR_ADD, DW1000.MODE_LONGDATA_RANGE_LOWPOWER, false);
+    DW1000Ranging.startAsAnchor(ANCHOR_ADD, DW1000.MODE_LONGDATA_RANGE_LOWPOWER, DW1000.CHANNEL_2, false);
 }
 
 void loop()

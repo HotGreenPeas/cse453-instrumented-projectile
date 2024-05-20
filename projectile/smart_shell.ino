@@ -1,5 +1,7 @@
 /*
-captures and sends projectile data 
+Captures and sends projectile data 
+
+References: 
 https://lastminuteengineers.com/mpu6050-accel-gyro-arduino-tutorial/
 https://github.com/plerup/espsoftwareserial/
 https://randomnerdtutorials.com/bme280-sensor-arduino-pressure-temperature-humidity/
@@ -42,13 +44,7 @@ https://github.com/Makerfabs/Makerfabs-ESP32-UWB/tree/main/example/tag/uwb_tag
 
 #define G 9.8
 
-// 0.0005, 	// sigma Accel
-//                                                0.0005, 	// sigma Gyro
-//                                                0.018,   // sigma Baro
-//                                                0.5, 	// ca
-//                                                0.1)
-
-// Altitude estimator
+// Altitude estimator (filters noisy data)
 AltitudeEstimator altitude = AltitudeEstimator(ACCEL_STDDEV, 	GYRO_STDDEV, 	BARO_STDDEV, CA, ACCEL_THRESH);	
 
 Adafruit_MPU6050 mpu;
@@ -57,6 +53,7 @@ Adafruit_BMP3XX bmp;
 
 EspSoftwareSerial::UART HC12;
 
+// SerialTransfer ensures data arrives intact
 SerialTransfer myTransfer;
 
 // connection pins
@@ -64,6 +61,7 @@ const uint8_t PIN_RST = 27;  // reset pin
 const uint8_t PIN_IRQ = 34;  // irq pin
 const uint8_t PIN_SS = 4;    // spi select pin
 
+// this is the data packet 
 struct __attribute__((packed)) STRUCT {
   float altitude;
   float distance;
@@ -71,6 +69,8 @@ struct __attribute__((packed)) STRUCT {
   float a_y;
 } testStruct;
 
+
+// initialize sensors 
 void setup(void) {
 
   testStruct.altitude = -1;
@@ -78,6 +78,8 @@ void setup(void) {
   testStruct.distance = -1;
 
   Serial.begin(115200);
+
+  // start IIC on defined pins
   Wire.begin(I2C_SDA, I2C_SCL);
 
   HC12.begin(9600, SWSERIAL_8N1, UART_RX, UART_TX, false);
@@ -192,6 +194,8 @@ void setup(void) {
 }
 
 long int runtime = 0;
+// send data every 60 ms
+// keep in mind, distance may not update every 60 ms
 void loop() {
   if ((millis() - runtime) > 60) {
     sendData();
@@ -199,14 +203,10 @@ void loop() {
     //printAcceleration();
     //printHeight();
   }
-  // if tag within 0.5 m of the anchor
-  // and is Vy = 0
-  // for 1 second
-  // set relative height to zero
-  
   DW1000Ranging.loop();
 }
 
+// reads sensors, process data, and sends it to ground station
 void sendData() {
   sensors_event_t a, g, temp;
   mpu.getEvent(&a, &g, &temp);
@@ -223,6 +223,7 @@ void sendData() {
   myTransfer.sendDatum(testStruct);
 }
 
+// prints out MPU6050 data
 void printAcceleration() {
   /* Get new sensor events with the readings */
   sensors_event_t a, g, temp;
@@ -252,6 +253,7 @@ void printAcceleration() {
   Serial.println("");
 }
 
+// prints out BMP390 data
 void printHeight() {
   Serial.print("Temperature = ");
   Serial.print(bmp.temperature);
